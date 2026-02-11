@@ -33,7 +33,7 @@ import com.example.esgrima.model.User
 fun Login(
     onLoginSuccess: () -> Unit,
 ) {
-    val authorizedUser = User("admin", "password")
+    val authorizedUser = User("admin", "1234")
     var usuario by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }

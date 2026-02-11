@@ -2,9 +2,10 @@ package com.example.esgrima.navigation
 
 sealed class RootScreen {
     object Login : RootScreen()
-    object Register : RootScreen()
     object Home : RootScreen()
-
+    object CrearTiradores : RootScreen()
+    object CrearArbitros : RootScreen()
+    object ListaCompeticiones : RootScreen()
 }
 
 sealed class MainDestination {

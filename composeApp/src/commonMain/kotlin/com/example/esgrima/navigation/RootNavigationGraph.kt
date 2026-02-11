@@ -17,7 +17,11 @@ fun RootNavigationGraph() {
             onLoginSuccess = { currentScreen = RootScreen.Home }
         )
 
-        RootScreen.Home -> Home()
+        RootScreen.Home -> Home(
+            onClickCrearTiradores = { currentScreen = RootScreen.CrearTiradores },
+            onClickCrearArbitros = { currentScreen = RootScreen.CrearArbitros },
+            onClickListaCompeticiones = { currentScreen = RootScreen.ListaCompeticiones }
+        )
 
         else -> {}
     }
