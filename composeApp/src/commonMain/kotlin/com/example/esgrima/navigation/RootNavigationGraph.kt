@@ -20,7 +20,7 @@ import com.example.esgrima.ui.tiradores.ListaTiradores
 fun RootNavigationGraph() {
     var currentScreen by remember { mutableStateOf<RootScreen>(RootScreen.Login) }
 
-    var competicionSeleccionada by remember { mutableStateOf<com.example.esgrima.model.Competicion?>(null) }
+    var competicionSeleccionada by remember { mutableStateOf<com.example.esgrima.model.competicion.Competicion?>(null) }
 
     when(currentScreen) {
         RootScreen.Login -> Login(

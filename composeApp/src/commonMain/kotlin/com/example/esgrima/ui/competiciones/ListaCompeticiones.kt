@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.esgrima.data.DataRepository
-import com.example.esgrima.model.Competicion
+import com.example.esgrima.model.competicion.Competicion
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

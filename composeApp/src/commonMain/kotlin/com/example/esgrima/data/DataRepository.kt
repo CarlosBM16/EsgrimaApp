@@ -1,10 +1,14 @@
 package com.example.esgrima.data
 
 import com.example.esgrima.model.Arbitro
-import com.example.esgrima.model.Competicion
+import com.example.esgrima.model.competicion.Competicion
 import com.example.esgrima.model.Direccion
 import com.example.esgrima.model.Modalidad
 import com.example.esgrima.model.Tirador
+import com.example.esgrima.model.competicion.Combate
+import com.example.esgrima.model.competicion.EstadoCompeticion
+import com.example.esgrima.model.competicion.Poule
+import com.example.esgrima.model.competicion.RegistroClasificacion
 
 object DataRepository {
     // Listas mutables para poder añadir elementos
@@ -96,6 +100,121 @@ object DataRepository {
                     )
                 )
             )
+        }
+    }
+
+    fun generarPoules(competicion: Competicion) {
+        val inscritos = competicion.competidores.shuffled() // Mezclamos para que sea aleatorio
+        val tamañoPoule = if (inscritos.size <= 7) inscritos.size else 6
+
+        val grupos = inscritos.chunked(tamañoPoule)
+
+        competicion.poules.clear()
+        grupos.forEachIndexed { index, tiradoresEnPoule ->
+            val nuevaPoule = Poule(numero = index + 1, tiradores = tiradoresEnPoule)
+
+            // Generar todos los cruces posibles (Todos contra todos en la poule)
+            for (i in tiradoresEnPoule.indices) {
+                for (j in i + 1 until tiradoresEnPoule.indices.last + 1) {
+                    nuevaPoule.combates.add(
+                        Combate(tiradoresEnPoule[i], tiradoresEnPoule[j])
+                    )
+                }
+            }
+            competicion.poules.add(nuevaPoule)
+        }
+        competicion.estado = EstadoCompeticion.POULES
+    }
+
+    fun calcularClasificacion(competicion: Competicion): List<RegistroClasificacion> {
+        val tabla = competicion.competidores.associateWith { RegistroClasificacion(it) }
+
+        competicion.poules.forEach { poule ->
+            poule.combates.filter { it.terminado }.forEach { combate ->
+                val reg1 = tabla[combate.tirador1]!!
+                val reg2 = tabla[combate.tirador2]!!
+
+                reg1.combatesTotales++
+                reg1.tocadosDados += combate.tocadosT1
+                reg1.tocadosRecibidos += combate.tocadosT2
+
+                reg2.combatesTotales++
+                reg2.tocadosDados += combate.tocadosT2
+                reg2.tocadosRecibidos += combate.tocadosT1
+
+                if (combate.tocadosT1 > combate.tocadosT2) reg1.victorias++
+                else if (combate.tocadosT2 > combate.tocadosT1) reg2.victorias++
+            }
+        }
+
+        // Ordenar por V/M (Victorias/Match) y luego por Índice
+        return tabla.values.sortedWith(compareByDescending<RegistroClasificacion> { it.v_m }.thenByDescending { it.indice })
+    }
+
+    fun generarDirectas(competicion: Competicion) {
+        val clasificados = calcularClasificacion(competicion).map { it.tirador }
+
+        // Determinamos el tamaño de la tabla (potencia de 2: 2, 4, 8, 16, 32...)
+        val n = clasificados.size
+        val tabla = when {
+            n <= 2 -> 2
+            n <= 4 -> 4
+            n <= 8 -> 8
+            n <= 16 -> 16
+            else -> 32
+        }
+
+        competicion.eliminatorias.clear()
+        competicion.tablaActual = tabla
+
+        // Lógica de emparejamiento 1 vs N, 2 vs N-1...
+        // Si hay huecos (BYEs), se gestionan dejando al oponente nulo o saltando
+        for (i in 0 until tabla / 2) {
+            val t1 = clasificados.getOrNull(i)
+            val t2 = clasificados.getOrNull(tabla - 1 - i)
+
+            if (t1 != null && t2 != null) {
+                competicion.eliminatorias.add(Combate(t1, t2))
+            } else if (t1 != null) {
+                // El tirador pasa de ronda automáticamente (BYE)
+                // Por ahora lo añadimos como un combate terminado 15-0
+                competicion.eliminatorias.add(Combate(t1, t1, 15, 0, true))
+            }
+        }
+
+        competicion.estado = EstadoCompeticion.ELIMINATORIAS
+    }
+
+    fun avanzarRonda(competicion: Competicion) {
+        // 1. Obtenemos los ganadores de los combates actuales
+        val ganadores = competicion.eliminatorias.map { combate ->
+            if (combate.tocadosT1 > combate.tocadosT2) combate.tirador1 else combate.tirador2
+        }
+
+        // 2. Limpiamos las eliminatorias viejas
+        competicion.eliminatorias.clear()
+
+        // 3. Reducimos el tamaño de la tabla (de 8 a 4, de 4 a 2, etc.)
+        competicion.tablaActual /= 2
+
+        // 4. Si solo queda 1 ganador, el torneo ha terminado
+        if (competicion.tablaActual < 2) {
+            competicion.estado = EstadoCompeticion.FINALIZADA
+            return
+        }
+
+        // 5. Emparejamos a los ganadores para la nueva ronda
+        // En las siguientes rondas suelen ir en orden de la lista de ganadores
+        for (i in 0 until ganadores.size step 2) {
+            val t1 = ganadores[i]
+            val t2 = ganadores.getOrNull(i + 1)
+
+            if (t2 != null) {
+                competicion.eliminatorias.add(Combate(t1, t2))
+            } else {
+                // Caso impar (BYE), pasa directamente
+                competicion.eliminatorias.add(Combate(t1, t1, 15, 0, true))
+            }
         }
     }
 }
