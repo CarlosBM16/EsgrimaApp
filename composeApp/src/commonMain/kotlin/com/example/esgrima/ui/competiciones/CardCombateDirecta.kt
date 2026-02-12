@@ -6,7 +6,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -14,7 +13,10 @@ import androidx.compose.ui.unit.dp
 import com.example.esgrima.model.competicion.Combate
 
 @Composable
-fun CardCombateDirecta(combate: Combate) {
+fun CardCombateDirecta(
+    combate: Combate,
+    onStatusChanged: () -> Unit
+) {
     // Usamos estados locales para que la UI se refresque al escribir
     var score1 by remember { mutableStateOf(combate.tocadosT1.toString()) }
     var score2 by remember { mutableStateOf(combate.tocadosT2.toString()) }
@@ -100,6 +102,7 @@ fun CardCombateDirecta(combate: Combate) {
                     onCheckedChange = {
                         isTerminado = it
                         combate.terminado = it
+                        onStatusChanged()
                     }
                 )
                 Text(

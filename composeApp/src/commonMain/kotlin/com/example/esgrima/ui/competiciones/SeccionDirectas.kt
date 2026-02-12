@@ -17,7 +17,7 @@ import com.example.esgrima.data.DataRepository
 import com.example.esgrima.model.competicion.Competicion
 
 @Composable
-fun SeccionDirectas(competicion: Competicion) {
+fun SeccionDirectas(competicion: Competicion, onRondaGenerada: () -> Unit) {
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Text(
             text = "Tablón de ${competicion.tablaActual}",
@@ -28,13 +28,16 @@ fun SeccionDirectas(competicion: Competicion) {
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             items(competicion.eliminatorias) { combate ->
                 // Reutilizamos tu CardCombate pero ajustando el límite a 15 puntos
-                CardCombateDirecta(combate)
+                CardCombateDirecta(combate, onStatusChanged = onRondaGenerada)
             }
         }
 
         // Botón para avanzar a la siguiente ronda (ej: de Octavos a Cuartos)
         Button(
-            onClick = { DataRepository.avanzarRonda(competicion) },
+            onClick = {
+                DataRepository.avanzarRonda(competicion)
+                onRondaGenerada()
+            },
             modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
             enabled = competicion.eliminatorias.all { it.terminado }
         ) {

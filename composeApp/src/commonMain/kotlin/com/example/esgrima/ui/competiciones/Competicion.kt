@@ -82,8 +82,19 @@ fun Competicion(
                         else SeccionClasificacion(competicion)
                     }
                     EstadoCompeticion.ELIMINATORIAS -> {
-                        if (selectedTab == 0) SeccionDirectas(competicion)
-                        else SeccionClasificacion(competicion)
+                        if (selectedTab == 0) {
+                            SeccionDirectas(
+                                competicion = competicion,
+                                onRondaGenerada = {
+                                    // Actualizamos la fase por si ha pasado a FINALIZADA
+                                    faseActual = competicion.estado
+                                    // Y forzamos el refresco visual de los nuevos combates
+                                    refrescarUI()
+                                }
+                            )
+                        } else {
+                            SeccionClasificacion(competicion)
+                        }
                     }
                     EstadoCompeticion.FINALIZADA -> {
                         SeccionClasificacion(competicion) // O una vista de podio
