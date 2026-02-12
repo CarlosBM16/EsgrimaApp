@@ -75,7 +75,7 @@ fun Home(
 
                 item {
                     DashboardButton(
-                        text = "Lista de tiradores",
+                        text = "Lista de árbitros",
                         icon = Icons.Default.List,
                         onClick = onClickListaArbitros
                     )

@@ -7,6 +7,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.example.esgrima.data.DataRepository
 import com.example.esgrima.ui.Home
+import com.example.esgrima.ui.arbitros.CrearArbitros
+import com.example.esgrima.ui.arbitros.ListaArbitros
 import com.example.esgrima.ui.auth.Login
 import com.example.esgrima.ui.tiradores.CrearTiradores
 import com.example.esgrima.ui.tiradores.ListaTiradores
@@ -43,6 +45,22 @@ fun RootNavigationGraph() {
         RootScreen.ListaTiradores -> ListaTiradores(
             onBack = { currentScreen = RootScreen.Home }
         )
+
+        RootScreen.CrearArbitros -> CrearArbitros(
+            onBack = { currentScreen = RootScreen.Home },
+            onArbitroGuardado = { nuevoArbitro ->
+                // Llamamos al repositorio
+                DataRepository.guardadoArbitro(nuevoArbitro)
+                // Navegamos hacia atrás o a la lista
+                currentScreen = RootScreen.Home
+
+            }
+        )
+
+        RootScreen.ListaArbitros -> ListaArbitros(
+            onBack = { currentScreen = RootScreen.Home }
+        )
+
 
 
 
