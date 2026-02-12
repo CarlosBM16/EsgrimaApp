@@ -84,6 +84,7 @@ fun CrearTiradores(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
+                .padding(paddingValues)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {

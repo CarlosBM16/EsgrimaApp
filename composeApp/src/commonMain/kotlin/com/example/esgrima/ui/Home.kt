@@ -20,6 +20,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -39,78 +40,83 @@ fun Home(
     onClickCrearCompeticiones: () -> Unit,
     onClickLogOut: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Text(
-            text = "Panel de Control",
-            style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(bottom = 24.dp, start = 8.dp)
-        )
-
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            modifier = Modifier.fillMaxSize()
+    Scaffold() {
+        paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .padding(paddingValues)
         ) {
-            item {
-                DashboardButton(
-                    text = "Lista de tiradores",
-                    icon = Icons.Default.List,
-                    onClick = onClickListaTiradores
-                )
-            }
-            item {
-                DashboardButton(
-                    text = "Crear Tiradores",
-                    icon = Icons.Default.PersonAdd,
-                    onClick = onClickCrearTiradores
-                )
-            }
+            Text(
+                text = "Panel de Control",
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.padding(bottom = 24.dp, start = 8.dp)
+            )
 
-            item {
-                DashboardButton(
-                    text = "Lista de tiradores",
-                    icon = Icons.Default.List,
-                    onClick = onClickListaArbitros
-                )
-            }
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier.fillMaxSize()
+            ) {
+                item {
+                    DashboardButton(
+                        text = "Lista de tiradores",
+                        icon = Icons.Default.List,
+                        onClick = onClickListaTiradores
+                    )
+                }
+                item {
+                    DashboardButton(
+                        text = "Crear Tiradores",
+                        icon = Icons.Default.PersonAdd,
+                        onClick = onClickCrearTiradores
+                    )
+                }
 
-            item {
-                DashboardButton(
-                    text = "Crear árbitros",
-                    icon = Icons.Default.PersonAdd,
-                    onClick = onClickCrearArbitros
-                )
-            }
+                item {
+                    DashboardButton(
+                        text = "Lista de tiradores",
+                        icon = Icons.Default.List,
+                        onClick = onClickListaArbitros
+                    )
+                }
 
-            item {
-                DashboardButton(
-                    text = "Lista de competiciones",
-                    icon = Icons.Default.List,
-                    onClick = onClickListaCompeticiones)
-            }
+                item {
+                    DashboardButton(
+                        text = "Crear árbitros",
+                        icon = Icons.Default.PersonAdd,
+                        onClick = onClickCrearArbitros
+                    )
+                }
 
-            item {
-                DashboardButton(
-                    text = "Crear competiciones",
-                    icon = Icons.Default.Add,
-                    onClick = onClickCrearCompeticiones
-                )
-            }
+                item {
+                    DashboardButton(
+                        text = "Lista de competiciones",
+                        icon = Icons.Default.List,
+                        onClick = onClickListaCompeticiones)
+                }
 
-            item {
-                DashboardButton (
-                    text = "Cerrar sesión",
-                    icon = Icons.Default.Logout,
-                    onClick = onClickLogOut,
-                    containerColor = MaterialTheme.colorScheme.error,
-                    contentColor = MaterialTheme.colorScheme.onError
-                )
+                item {
+                    DashboardButton(
+                        text = "Crear competiciones",
+                        icon = Icons.Default.Add,
+                        onClick = onClickCrearCompeticiones
+                    )
+                }
+
+                item {
+                    DashboardButton (
+                        text = "Cerrar sesión",
+                        icon = Icons.Default.Logout,
+                        onClick = onClickLogOut,
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError
+                    )
+                }
             }
         }
     }
+
 }
 
 @Composable
