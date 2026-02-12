@@ -61,5 +61,41 @@ object DataRepository {
                 Arbitro("Silence", "Montane", "F", 40, 10, "Posada de las Sombras", "Treno", listOf(Modalidad.SABLE), Direccion("Bosques del Infierno", "Treno", "Treno", 50001), 600000119)
             )
         )
+
+        // 2. Ahora generamos las competiciones usando esos datos
+        if (listaTiradores.isNotEmpty() && listaArbitros.isNotEmpty()) {
+            listaCompeticiones.addAll(
+                listOf(
+                    Competicion(
+                        nombre = "Torneo de las Llanuras Quebradas",
+                        entidadOrganizadora = "Casa Kholin",
+                        fecha = "15/05/2026",
+                        lugar = "Urithiru - Sala de Duelos",
+                        armas = Modalidad.ESPADA,
+                        // Asignamos algunos tiradores y árbitros ya existentes
+                        competidores = listaTiradores.filter { it.modalidad == Modalidad.ESPADA }.take(4),
+                        arbitros = listaArbitros.filter { it.modalidad.contains(Modalidad.ESPADA) }.take(2)
+                    ),
+                    Competicion(
+                        nombre = "Copa de la Bruma",
+                        entidadOrganizadora = "Banda de Kelsier",
+                        fecha = "20/06/2026",
+                        lugar = "Luthadel - Plaza Central",
+                        armas = Modalidad.SABLE,
+                        competidores = listaTiradores.filter { it.modalidad == Modalidad.SABLE }.take(3),
+                        arbitros = listaArbitros.filter { it.modalidad.contains(Modalidad.SABLE) }.take(1)
+                    ),
+                    Competicion(
+                        nombre = "Open de Hallandren",
+                        entidadOrganizadora = "Corte de los Dioses",
+                        fecha = "10/08/2026",
+                        lugar = "T'Telir - Palacio de Colores",
+                        armas = Modalidad.FLORETE,
+                        competidores = listaTiradores.filter { it.modalidad == Modalidad.FLORETE }.take(3),
+                        arbitros = listaArbitros.filter { it.modalidad.contains(Modalidad.FLORETE) }.take(2)
+                    )
+                )
+            )
+        }
     }
 }

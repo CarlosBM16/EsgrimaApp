@@ -6,16 +6,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.example.esgrima.data.DataRepository
+import com.example.esgrima.navigation.RootScreen.Competicion
 import com.example.esgrima.ui.Home
 import com.example.esgrima.ui.arbitros.CrearArbitros
 import com.example.esgrima.ui.arbitros.ListaArbitros
 import com.example.esgrima.ui.auth.Login
+import com.example.esgrima.ui.competiciones.CrearCompeticiones
+import com.example.esgrima.ui.competiciones.ListaCompeticiones
 import com.example.esgrima.ui.tiradores.CrearTiradores
 import com.example.esgrima.ui.tiradores.ListaTiradores
 
 @Composable
 fun RootNavigationGraph() {
     var currentScreen by remember { mutableStateOf<RootScreen>(RootScreen.Login) }
+
+    var competicionSeleccionada by remember { mutableStateOf<com.example.esgrima.model.Competicion?>(null) }
 
     when(currentScreen) {
         RootScreen.Login -> Login(
@@ -61,7 +66,30 @@ fun RootNavigationGraph() {
             onBack = { currentScreen = RootScreen.Home }
         )
 
+        RootScreen.CrearCompeticiones -> CrearCompeticiones(
+            onBack = { currentScreen = RootScreen.Home },
+            onCompeticionGuardada = { nuevaCompeticion ->
+                DataRepository.guardadoCompeticion(nuevaCompeticion)
+                currentScreen = RootScreen.Home
+            }
+        )
 
+        RootScreen.ListaCompeticiones -> ListaCompeticiones(
+            onBack = { currentScreen = RootScreen.Home },
+            onCompeticionClick = { competicion ->
+                competicionSeleccionada = competicion
+                currentScreen = RootScreen.Competicion
+            }
+        )
+
+        RootScreen.Competicion -> {
+            competicionSeleccionada?.let { comp ->
+                com.example.esgrima.ui.competiciones.Competicion(
+                    competicion = comp,
+                    onBack = { currentScreen = RootScreen.ListaCompeticiones }
+                )
+            }
+        }
 
 
         else -> {}
