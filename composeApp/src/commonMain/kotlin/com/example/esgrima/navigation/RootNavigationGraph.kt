@@ -40,7 +40,9 @@ fun RootNavigationGraph() {
             onBack = { currentScreen = RootScreen.Home }
         )
 
-        RootScreen.ListaTiradores -> ListaTiradores()
+        RootScreen.ListaTiradores -> ListaTiradores(
+            onBack = { currentScreen = RootScreen.Home }
+        )
 
 
 
