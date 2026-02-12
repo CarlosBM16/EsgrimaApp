@@ -6,6 +6,9 @@ sealed class RootScreen {
     object CrearTiradores : RootScreen()
     object CrearArbitros : RootScreen()
     object ListaCompeticiones : RootScreen()
+    object ListaTiradores : RootScreen()
+    object ListaArbitros : RootScreen()
+    object CrearCompeticiones : RootScreen()
 }
 
 sealed class MainDestination {
